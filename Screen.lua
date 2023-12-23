@@ -1,9 +1,15 @@
+local enable_background_image = true
+local background_image = loadImage("assets.prod.novaquark.com/102348/718b6805-93cb-4310-b271-0b20907b05c0.png")
+local cursor_image = loadImage("assets.prod.novaquark.com/102348/a6ad4ff3-372f-46f6-8e2c-86aa0c54f3a3.png")
 local json = require('json')
 layer = createLayer()
 frontlayer = createLayer()
 cursorlayer = createLayer()
 cursorlayer2 = createLayer()
 inactive_layer = createLayer()
+
+
+
 
 local input = getInput()
 if input ~= "" then
@@ -23,6 +29,7 @@ if getInput():len() > 0 then
     Preset_2 = tonumber(values[5]) 
     Preset_3 = tonumber(values[6])
     Preset_4 = tonumber(values[7])
+    
     RGBr = values[8]
     RGBg = values[9]
     RGBb = values[10]
@@ -31,6 +38,12 @@ if getInput():len() > 0 then
     maxAGGheight = values[13]
     currentAlt = values[14]
     atmoheight = tonumber(values[15]) -- 10% atmo
+    
+    Preset_5 = tonumber(values[16])
+    Preset_6 = tonumber(values[17]) 
+    Preset_7 = tonumber(values[18])
+    Preset_8 = tonumber(values[19])
+    atmoheight_0 = values[20]
 else  --fallback values--
     aggstate = 0
     aggtarget = 1000
@@ -47,6 +60,10 @@ else  --fallback values--
     maxAGGheight = 200000
     currentAlt = 2000
     atmoheight = 3600
+    Preset_5 = 0
+    Preset_6 = 0  
+    Preset_7 = 0
+    Preset_8 = 0
 end
 
 color = {r=RGBr,g=RGBg,b=RGBb}
@@ -58,14 +75,20 @@ config_altitude_max = maxAGGheight
 config_altitude_steps = {
     -- { start, altitude }
     { 0.00, config_altitude_min },
-    { 0.50, config_altitude_max/25 },
-    { 0.75, config_altitude_max/5 },
+    { 0.70, config_altitude_max*0.25 },
+    { 0.85, config_altitude_max*0.5 },
     { 1.00, config_altitude_max },
 }   
 
 rx, ry = getResolution()
 cx, cy = getCursor() 
-cursor_image = loadImage("assets.prod.novaquark.com/102348/a6ad4ff3-372f-46f6-8e2c-86aa0c54f3a3.png")
+
+if enable_background_image == true then
+    setNextFillColor(layer, color.r, color.g, color.b, 0.05) --Background Image colour and Transparency
+ -- setNextFillColor(layer, 1, 1, 1, 1) --Use this for an normal colour Background Image!
+    addImage(layer, background_image, 0, 0, rx, ry)
+end
+
 --fonts--
 font_big = loadFont('Oxanium-Bold',40)
 font_small = loadFont('Oxanium',20)
@@ -99,7 +122,7 @@ end
 function get_pretty_distance(meters)
     meters = tonumber(meters)
     if meters > (atmoheight or 3600) then
-        return ('%.0fkm'):format(meters / 1000)
+        return ('%.1fkm'):format(meters / 1000)
     end
     return ('%.0fm'):format(meters)
 end
@@ -305,6 +328,7 @@ if not Slider then
 
             -- Draw the gravity well
             local well_y_min, well_y_max = self:getYForValue(math.max(self.min, aggbase - 100)), self:getYForValue(math.min(aggbase + 100, self.max))
+            setDefaultShadow(frontlayer,Shape_Line, 15, 2, 2, 2, 0.1)
             addLine(frontlayer, x + w + 6, well_y_max, x + w + 12, well_y_max)
             addLine(frontlayer, x + w + 12, well_y_min, x + w + 12, well_y_max)
             addLine(frontlayer, x + w + 6, well_y_min, x + w + 12, well_y_min)
@@ -312,18 +336,30 @@ if not Slider then
             addLine(frontlayer, x - 12, well_y_min, x - 12, well_y_max)
             addLine(frontlayer, x - 6, well_y_min, x - 12, well_y_min)
 
-            -- Draw Atmosphere
+            -- Draw Atmosphere 10%
 
             if atmoheight then
                 local atmo_y = self:getYForValue(atmoheight)
-
-                addLine(layer, x + w + 6, atmo_y, x + w + 12, atmo_y)
+                setDefaultStrokeColor(layer,Shape_Line,0, 0.4, 1, 1)
+                addLine(layer, x + w + 6, atmo_y, x + w + 25, atmo_y)
                 setNextTextAlign(layer, AlignH_Left, AlignV_Middle)
                 addText(layer, font_tiny, '10% ATMO', x + w + 36, atmo_y)
 
-                addLine(layer, x - 6, atmo_y, x - 12, atmo_y)
+                addLine(layer, x - 6, atmo_y, x - 25, atmo_y)
                 setNextTextAlign(layer, AlignH_Right, AlignV_Middle)
-                addText(layer, font_tiny, '10% ATMO', x - 36, atmo_y)
+                addText(layer, font_tiny, '10% ATMO', x - 33, atmo_y)
+            end
+            -- Draw Atmosphere 0%
+            if atmoheight then
+                local atmo0_y = self:getYForValue(atmoheight_0)
+                 setDefaultStrokeColor(layer,Shape_Line,0, 0.4, 1, 1)
+                addLine(layer, x + w + 6, atmo0_y, x + w + 25, atmo0_y)
+                setNextTextAlign(layer, AlignH_Left, AlignV_Middle)
+                addText(layer, font_tiny, '0% ATMO', x + w + 36, atmo0_y)
+
+                addLine(layer, x - 6, atmo0_y, x - 25, atmo0_y)
+                setNextTextAlign(layer, AlignH_Right, AlignV_Middle)
+                addText(layer, font_tiny, '0% ATMO', x - 36, atmo0_y)
             end
             
             -- ship height marker
@@ -409,10 +445,15 @@ end
 ---- Touch Box setup ----
 box1 = {x1=rx/2+200,y1=ry/2-75,x2=220,y2=100}
 box11 = {x1=rx/2+225,y1=ry/2+80,x2=170,y2=55}
-box2 = {x1=rx/2-480,y1=ry/2+215,x2=150,y2=60}
-box3 = {x1=rx/2-290,y1=ry/2+215,x2=150,y2=60}
-box4 = {x1=rx/2+145,y1=ry/2+215,x2=150,y2=60}
-box5 = {x1=rx/2+335,y1=ry/2+215,x2=150,y2=60}
+box2 = {x1=rx/2-460,y1=ry/2+175,x2=130,y2=50}
+box3 = {x1=rx/2-290,y1=ry/2+175,x2=130,y2=50}
+box4 = {x1=rx/2-460,y1=ry/2+245,x2=130,y2=50}
+box5 = {x1=rx/2-290,y1=ry/2+245,x2=130,y2=50}
+
+box6 = {x1=rx/2+170,y1=ry/2+175,x2=130,y2=50}
+box7 = {x1=rx/2+330,y1=ry/2+175,x2=130,y2=50}
+box8 = {x1=rx/2+170,y1=ry/2+245,x2=130,y2=50}
+box9 = {x1=rx/2+330,y1=ry/2+245,x2=130,y2=50}
 setDefaultStrokeColor(frontlayer,Shape_BoxRounded,color1.r, color1.g, color1.b, 1)
 setDefaultFillColor(frontlayer,Shape_BoxRounded,color1.r/9, color1.g/9, color1.b/9, 1)
 setDefaultStrokeWidth(frontlayer,Shape_BoxRounded,1)
@@ -504,13 +545,69 @@ end
    setNextShadow(frontlayer, 32, color.r, color.g, color.b, 0.4)
    addBoxRounded(frontlayer, box5.x1,box5.y1,box5.x2,box5.y2,4)
 end
+--box6--
+   addBoxRounded(frontlayer, box6.x1,box6.y1,box6.x2,box6.y2,4)
+   addText(frontlayer,font_small,""..Preset_5.."m",box6.x1+(box6.x2/2),box6.y1+(box6.y2/2))
+if isCursorIn(box6.x1,box6.y1,box6.x1+box6.x2,box6.y1+box6.y2) then
+   setNextFillColor(frontlayer,0.3, 0.3, 0.3, 1)
+if getCursorDown() then
+   setNextFillColor(frontlayer,0.1, 0.1, 0.1, 1)
+if getCursorPressed() then set_altitude(Preset_5)  end                
+   else
+   setNextFillColor(frontlayer,0.3, 0.3, 0.3, 1)
+end
+   setNextShadow(frontlayer, 32, color.r, color.g, color.b, 0.4)
+   addBoxRounded(frontlayer, box6.x1,box6.y1,box6.x2,box6.y2,4)
+end
+--box7--
+   addBoxRounded(frontlayer, box7.x1,box7.y1,box7.x2,box7.y2,4)
+   addText(frontlayer,font_small,""..Preset_6.."m",box7.x1+(box7.x2/2),box7.y1+(box7.y2/2))
+if isCursorIn(box7.x1,box7.y1,box7.x1+box7.x2,box7.y1+box7.y2) then
+   setNextFillColor(frontlayer,0.3, 0.3, 0.3, 1)
+if getCursorDown() then
+   setNextFillColor(frontlayer,0.1, 0.1, 0.1, 1)
+if getCursorPressed() then set_altitude(Preset_6)  end                
+   else
+   setNextFillColor(frontlayer,0.3, 0.3, 0.3, 1)
+end
+   setNextShadow(frontlayer, 32, color.r, color.g, color.b, 0.4)
+   addBoxRounded(frontlayer, box7.x1,box7.y1,box7.x2,box7.y2,4)
+end
+--box8--
+   addBoxRounded(frontlayer, box8.x1,box8.y1,box8.x2,box8.y2,4)
+   addText(frontlayer,font_small,""..Preset_7.."m",box8.x1+(box8.x2/2),box8.y1+(box8.y2/2))
+if isCursorIn(box8.x1,box8.y1,box8.x1+box8.x2,box8.y1+box8.y2) then
+   setNextFillColor(frontlayer,0.3, 0.3, 0.3, 1)
+if getCursorDown() then
+   setNextFillColor(frontlayer,0.1, 0.1, 0.1, 1)
+if getCursorPressed() then set_altitude(Preset_7)  end                
+   else
+   setNextFillColor(frontlayer,0.3, 0.3, 0.3, 1)
+end
+   setNextShadow(frontlayer, 32, color.r, color.g, color.b, 0.4)
+   addBoxRounded(frontlayer, box8.x1,box8.y1,box8.x2,box8.y2,4)
+end
 
+--box9--
+   addBoxRounded(frontlayer, box9.x1,box9.y1,box9.x2,box9.y2,4)
+   addText(frontlayer,font_small,""..Preset_8.."m",box9.x1+(box9.x2/2),box9.y1+(box9.y2/2))
+if isCursorIn(box9.x1,box9.y1,box9.x1+box9.x2,box9.y1+box9.y2) then
+   setNextFillColor(frontlayer,0.3, 0.3, 0.3, 1)
+if getCursorDown() then
+   setNextFillColor(frontlayer,0.1, 0.1, 0.1, 1)
+if getCursorPressed() then set_altitude(Preset_8)  end                
+   else
+   setNextFillColor(frontlayer,0.3, 0.3, 0.3, 1)
+end
+   setNextShadow(frontlayer, 32, color.r, color.g, color.b, 0.4)
+   addBoxRounded(frontlayer, box9.x1,box9.y1,box9.x2,box9.y2,4)
+end
 --left text and deco
 setDefaultTextAlign(frontlayer, AlignH_Left, AlignV_Middle)
 addText(frontlayer,font_small,"Target Altitude:",50,ry/2-240)
 addText(frontlayer,font_small,"Gravity Well Altitude:",50,ry/2-200)
 addText(frontlayer,font_small,"Current Altitude: ",50,ry/2-160)
-    addText(frontlayer,font_small,"Travel Time: ~",50,ry/2-120)
+addText(frontlayer,font_small,"Travel Time: ~",50,ry/2-120)
 
 setDefaultTextAlign(frontlayer, AlignH_Right, AlignV_Middle)
 addText(frontlayer,font_small,""..math.floor(aggtarget).."m",350,ry/2-240)
