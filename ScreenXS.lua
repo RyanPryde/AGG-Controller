@@ -629,7 +629,7 @@ addBox(layer,660,40, 330, 420)
 setNextTextAlign(frontlayer, AlignH_Center, AlignV_Middle)
 addText(frontlayer,font_big,"AGG Controller",rx/2+315,ry/2-240)
 setNextTextAlign(frontlayer, AlignH_Center, AlignV_Middle)
-addText(frontlayer,font_small,"v1.4.15 by:",rx/2+315,ry/2-200)
+addText(frontlayer,font_small,"v1.4.15v3 by:",rx/2+315,ry/2-200)
 setNextTextAlign(frontlayer, AlignH_Center, AlignV_Middle)
 addText(frontlayer,font_tiny,"Hadron | Wolfe Labs | TheGreatSardini",rx/2+315,ry/2-160)
 
