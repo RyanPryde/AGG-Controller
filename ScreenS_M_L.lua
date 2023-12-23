@@ -1,5 +1,12 @@
 local enable_background_image = true
 local background_image = loadImage("assets.prod.novaquark.com/102348/718b6805-93cb-4310-b271-0b20907b05c0.png")
+theme_color = true --set to false to use below colors 
+imageRed = 1 --background image red channel
+imageGreen = 1 --background image green channel
+imageBlue = 1 --background image blue channel
+imageTrans = 1 --background image transparency
+
+
 local cursor_image = loadImage("assets.prod.novaquark.com/102348/a6ad4ff3-372f-46f6-8e2c-86aa0c54f3a3.png")
 local json = require('json')
 layer = createLayer()
@@ -8,9 +15,6 @@ cursorlayer = createLayer()
 cursorlayer2 = createLayer()
 inactive_layer = createLayer()
 
-
-
-
 local input = getInput()
 if input ~= "" then
     values = {}
@@ -18,8 +22,6 @@ if input ~= "" then
         table.insert(values, word:match("^%s*(.-)%s*$"))
     end
 end
-
-
 
 if getInput():len() > 0 then
     aggstate = values[1]
@@ -84,7 +86,10 @@ rx, ry = getResolution()
 cx, cy = getCursor() 
 
 if enable_background_image == true then
+    if theme_color == true then
     setNextFillColor(layer, color.r, color.g, color.b, 0.05) --Background Image colour and Transparency
+        else 
+    setNextFillColor(layer, imageRed, imageGreen, imageBlue, imageTrans) end
  -- setNextFillColor(layer, 1, 1, 1, 1) --Use this for an normal colour Background Image!
     addImage(layer, background_image, 0, 0, rx, ry)
 end
@@ -444,7 +449,7 @@ end
 
 ---- Touch Box setup ----
 box1 = {x1=rx/2+200,y1=ry/2-75,x2=220,y2=100}
-box11 = {x1=rx/2+225,y1=ry/2+80,x2=170,y2=55}
+box11 = {x1=rx/2+220,y1=ry/2+80,x2=190,y2=55}
 box2 = {x1=rx/2-460,y1=ry/2+175,x2=130,y2=50}
 box3 = {x1=rx/2-290,y1=ry/2+175,x2=130,y2=50}
 box4 = {x1=rx/2-460,y1=ry/2+245,x2=130,y2=50}
@@ -622,10 +627,10 @@ addBox(layer,30,40, 340, 420)
 addBox(layer,660,40, 330, 420)
 
 setNextTextAlign(frontlayer, AlignH_Center, AlignV_Middle)
-addText(frontlayer,font_big,"AGG Controller",rx/2+320,ry/2-240)
+addText(frontlayer,font_big,"AGG Controller",rx/2+315,ry/2-240)
 setNextTextAlign(frontlayer, AlignH_Center, AlignV_Middle)
-addText(frontlayer,font_small,"v1.4.15 by:",rx/2+320,ry/2-200)
+addText(frontlayer,font_small,"v1.4.15 by:",rx/2+315,ry/2-200)
 setNextTextAlign(frontlayer, AlignH_Center, AlignV_Middle)
-addText(frontlayer,font_tiny,"Hadron | Wolfe Labs | TheGreatSardini",rx/2+320,ry/2-160)
+addText(frontlayer,font_tiny,"Hadron | Wolfe Labs | TheGreatSardini",rx/2+315,ry/2-160)
 
 
