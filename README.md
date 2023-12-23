@@ -10,6 +10,11 @@ Estimated Travel time based on distance to targetheight and current speed.
 All touch controlled.
 Databank Target Altitude Save.
 
+The script can now also Sync with the RGB Script DB.
+Simply use the RGB DB as primary db and enable sync in parameters.
+
+
+
 Board parameters:
 8 Configurable Height Presets.
 Max bar height can be adjusted.
