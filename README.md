@@ -2,3 +2,19 @@
 
 
 # AGG-Controller
+
+Controller Script for Dual Universe.
+Shows 0 and 10% atmosphere marks.
+Current position and AGG gravity well indicator.
+Estimated Travel time based on distance to targetheight and current speed.
+All touch controlled.
+Databank Target Altitude Save.
+
+Board parameters:
+8 Configurable Height Presets.
+Max bar height can be adjusted.
+Theme Colour in RGB LUA format (0-1) eg. {r=0,g=0.4,b=1} is lightblue.
+
+Background image can be canged in the Screen
+(Background image colour adjustments on line 87)
+
