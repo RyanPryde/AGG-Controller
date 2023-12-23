@@ -18,3 +18,4 @@ Theme Colour in RGB LUA format (0-1) eg. {r=0,g=0.4,b=1} is lightblue.
 Background image can be canged in the Screen
 (Background image colour adjustments on line 87)
 
+Link Board to Core, AGG, Screen, Databank.
