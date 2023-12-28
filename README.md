@@ -24,3 +24,5 @@ Background image can be canged in the Screen
 (Background image colour adjustments on top of screencode)
 
 Link Board to Core, AGG, Screen, Databank.
+
+Place Soundfiles in \Documents\NQ\DualUniverse\audio.
