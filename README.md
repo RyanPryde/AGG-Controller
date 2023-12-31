@@ -1,4 +1,4 @@
-![alt text](/agg.png)
+![alt text](/aggv4.png)
 
 
 # AGG-Controller
